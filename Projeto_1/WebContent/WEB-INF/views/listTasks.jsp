@@ -41,5 +41,9 @@
 </c:forEach>
 </table>
 
+<form action="create" method="get">
+<input type="submit" value="create">
+</form>
+
 </body>
 </html>

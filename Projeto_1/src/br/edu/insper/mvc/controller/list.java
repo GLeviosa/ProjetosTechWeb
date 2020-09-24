@@ -47,7 +47,7 @@ public class list extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		DAO dao = new DAO();
-		List<Task> tasks = dao.getLista();
+		List<Task> tasks = dao.getTasks();
 		
 		request.setAttribute("tasks", tasks);
 		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/listTasks.jsp");

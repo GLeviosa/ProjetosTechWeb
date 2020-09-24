@@ -53,7 +53,7 @@ public class create extends HttpServlet {
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			task.setCreDate(timestamp);
 
-			dao.add(task);
+			dao.addTask(task);
 			dao.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("list");
 			dispatcher.forward(request,response);

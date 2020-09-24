@@ -53,7 +53,7 @@ public class update extends HttpServlet {
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			task.setCreDate(timestamp);
 		
-			dao.update(task);
+			dao.updateTask(task);
 			dao.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("list");
 			dispatcher.forward(request,response);

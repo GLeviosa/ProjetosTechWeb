@@ -28,7 +28,7 @@ public class DAO {
 		
 	}
 	
-	public List<Task> getLista() {
+	public List<Task> getTasks() {
 		List<Task> tasks = new ArrayList<Task>();
 		
 		try {
@@ -55,7 +55,34 @@ public class DAO {
 		return tasks;
 	}
 	
-	public void add(Task task){
+	public List<User> getUsers() {
+		List<User> users = new ArrayList<User>();
+		
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement("SELECT * FROM Users");
+		
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()) {
+				User user = new User();
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getNString("username"));
+				user.setPassword(rs.getNString("pwd"));
+				users.add(user);
+			}
+			
+			rs.close();
+			stmt.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return users;
+	}
+	
+	public void addTask(Task task){
 		String sql ="INSERT INTO Tasks"
 					+"(user, task, tag, creDate) values(?,?,?,?)";
 		PreparedStatement stmt;
@@ -72,11 +99,24 @@ public class DAO {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void addUser(User user) {
+		String sql = "INSERT INTO Users (user, pwd) values(?,?";
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement(sql);
+			stmt.setNString(1, user.getUsername());
+			stmt.setNString(2, user.getPassword());
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+	}
 	
 	
-	
-	public void remove(Integer id){
+	public void removeTask(Integer id){
 		PreparedStatement stmt;
 		try {
 			stmt = connection.prepareStatement(
@@ -93,7 +133,7 @@ public class DAO {
 		
 	}
 	
-	public void update(Task task) throws SQLException{
+	public void updateTask(Task task) throws SQLException{
 		String sql ="UPDATE Tasks SET " +
 				"user=?, task=?, tag=?, creDate=? WHERE id=?";
 		PreparedStatement stmt = connection.prepareStatement(sql);
