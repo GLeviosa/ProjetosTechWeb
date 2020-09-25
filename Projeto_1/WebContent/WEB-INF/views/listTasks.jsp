@@ -3,7 +3,7 @@
 <%@ page import="java.util.*,br.edu.insper.*" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
+<%@ page language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,12 +11,11 @@
 <title>Tasks</title>
 </head>
 <body>
-
+<h1>Welcome, ${sessionScope["username"]}</h1>
 <table border="1">
 
 <c:forEach var="task" items="${tasks}">
 <tr>
-<td>${task.user}</td>
 <td>${task.task}</td>
 <td>${task.tag}</td>
 <td>${task.creDate}</td>
@@ -40,6 +39,16 @@
 
 </c:forEach>
 </table>
+
+<form action="create" method="get">
+<input type="submit" value="create">
+
+</form>
+
+<form action="login" method="get">
+<input type="submit" value="exit">
+
+</form>
 
 </body>
 </html>

@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import br.edu.insper.mvc.model.*;
 
@@ -45,15 +46,16 @@ public class update extends HttpServlet {
 		try {
 			DAO dao = new DAO();
 			Task task = new Task();
-			
+			HttpSession sesh = request.getSession();
+			String username = (String) sesh.getAttribute("username");
 			task.setId(Integer.valueOf(request.getParameter("id")));
-			task.setUser(request.getParameter("user"));
+			task.setUser(username);
 			task.setTask(request.getParameter("task"));
 			task.setTag(request.getParameter("tag"));
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			task.setCreDate(timestamp);
 		
-			dao.update(task);
+			dao.updateTask(task);
 			dao.close();
 			RequestDispatcher dispatcher = request.getRequestDispatcher("list");
 			dispatcher.forward(request,response);
