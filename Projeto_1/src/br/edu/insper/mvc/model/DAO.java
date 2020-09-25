@@ -16,7 +16,7 @@ public class DAO {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost/dados_p1","root","azir1q2w3");
+					"jdbc:mysql://localhost/dados_p1?autoReconnect=true&useSSL=false","root","azir1q2w3");
 			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -28,24 +28,42 @@ public class DAO {
 		
 	}
 	
-	public List<Task> getTasks() {
+	public List<Task> getTasks(String username) {
 		List<Task> tasks = new ArrayList<Task>();
-		
 		try {
-			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Tasks");
-			ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				Task task = new Task();
-				task.setId(rs.getInt("id"));
-				task.setUser(rs.getNString("user"));
-				task.setTask(rs.getNString("task"));
-				task.setTag(rs.getNString("tag"));
-				task.setCreDate(rs.getTimestamp("creDate"));
-				tasks.add(task);
+			if (username.equals("admin")) {
+				PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Tasks ORDER BY tag ASC");
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Task task = new Task();
+					task.setId(rs.getInt("id"));
+					task.setUser(rs.getNString("user"));
+					task.setTask(rs.getNString("task"));
+					task.setTag(rs.getNString("tag"));
+					task.setCreDate(rs.getTimestamp("creDate"));
+					tasks.add(task);
+				}
+				rs.close();
+				stmt.close();
+			} else {
+				PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Tasks WHERE user=? ORDER BY tag ASC");
+				stmt.setString(1,username);
+				ResultSet rs = stmt.executeQuery();
+				while (rs.next()) {
+					Task task = new Task();
+					task.setId(rs.getInt("id"));
+					task.setUser(rs.getNString("user"));
+					task.setTask(rs.getNString("task"));
+					task.setTag(rs.getNString("tag"));
+					task.setCreDate(rs.getTimestamp("creDate"));
+					tasks.add(task);
+				}
+				rs.close();
+				stmt.close();
 			}
 			
-			rs.close();
-			stmt.close();
+			
+			
 
 			} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -67,7 +85,7 @@ public class DAO {
 			while(rs.next()) {
 				User user = new User();
 				user.setId(rs.getInt("id"));
-				user.setUsername(rs.getNString("username"));
+				user.setUsername(rs.getNString("user"));
 				user.setPassword(rs.getNString("pwd"));
 				users.add(user);
 			}
@@ -102,7 +120,7 @@ public class DAO {
 	}
 	
 	public void addUser(User user) {
-		String sql = "INSERT INTO Users (user, pwd) values(?,?";
+		String sql = "INSERT INTO Users (user, pwd) values(?,?)";
 		PreparedStatement stmt;
 		try {
 			stmt = connection.prepareStatement(sql);

@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import br.edu.insper.mvc.model.DAO;
 import br.edu.insper.mvc.model.User;
@@ -33,6 +34,8 @@ public class login extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/index.html");
+		dispatcher.forward(request, response);
 	}
 
 	/**
@@ -40,7 +43,6 @@ public class login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
 		String username = request.getParameter("username");
 		String pwd = request.getParameter("pwd"); 
 		
@@ -61,7 +63,9 @@ public class login extends HttpServlet {
 		}
 		
 		if (isUser) {
-			request.setAttribute("user", udyr);
+			HttpSession sesh = request.getSession();
+			
+			sesh.setAttribute("username", udyr.getUsername());
 			RequestDispatcher dispatcher = request.getRequestDispatcher("list");
 			dispatcher.forward(request, response);
 		}

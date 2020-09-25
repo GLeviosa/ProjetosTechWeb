@@ -1,8 +1,7 @@
 package br.edu.insper.mvc.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,22 +9,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import br.edu.insper.mvc.model.*;
 
-
 /**
- * Servlet implementation class create
+ * Servlet implementation class signup
  */
-@WebServlet("/create")
-public class create extends HttpServlet {
+@WebServlet("/signup")
+public class signup extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public create() {
+    public signup() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,7 +32,7 @@ public class create extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/formCreate.html");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/signup.jsp");
 		dispatcher.forward(request,response);
 	}
 
@@ -44,26 +41,33 @@ public class create extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		try {
-			DAO dao = new DAO();
-			Task task = new Task();
-			HttpSession session = request.getSession();
-			String username = (String) session.getAttribute("username");
-			task.setUser(username);
-			task.setTask(request.getParameter("task"));
-			task.setTag(request.getParameter("tag"));
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			task.setCreDate(timestamp);
-
-			dao.addTask(task);
-			dao.close();
-			RequestDispatcher dispatcher = request.getRequestDispatcher("list");
-			dispatcher.forward(request,response);
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String username = request.getParameter("username");
+		String pwd = request.getParameter("pwd"); 
+		
+		DAO dao = new DAO();
+		List<User> users = dao.getUsers();
+		boolean isUser = false;
+		for (User user : users) {
+			if (user.getUsername().contentEquals(username)) {
+				isUser = true;
+				break;
+			}
 		}
-	} 
+		
+		if (isUser) {
+			response.getWriter().println("Username already taken, try another one!");
+		} else {
+			System.out.println("cadastrou");
+			System.out.println(username);
+			System.out.println(pwd);
+			User user = new User();
+			user.setUsername(username);
+			user.setPassword(pwd);
+			dao.addUser(user);
+			
+			RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/index.html");
+			dispatcher.forward(request,response);
+		}
+;	}
 
 }
